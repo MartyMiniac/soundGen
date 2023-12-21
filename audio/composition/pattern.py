@@ -1,47 +1,42 @@
 from helpers.types import NoteType, FrequencyType
-from audio.frequency import Frequency
-from typing import List
-import numpy as np 
+from typing import List, Dict
+import numpy as np
+
 
 class Pattern:
     def __init__(self, volume: float):
-        self.notes: List[List[NoteType]] = []
+        self.notes: List[NoteType] = []
         self.volume: float = volume
+        self.length = 0
+        self.position = 0
 
-    def addNote(self, note: NoteType, position:int = -1):
-        note.injectVolume(self.volume)
-        if position == -1:
-            self.notes.append([note])
-        else:
-            if position < len(self.notes):
-                self.notes[position].append(note)
-            else:
-                raise Exception("Position out of range")
-        
-    def render(self) -> np.ndarray:
-        freqs: List[FrequencyType] = []
+    def addNote(self, note: NoteType):
+        note.setVolume(self.volume)        
+        self.notes.append(note)
+        self.__calcLength()
+
+    def __calcLength(self):
         for i in self.notes:
-            f: FrequencyType=None
-            for j in i:
-                j.injectSampleRate(self.sampleRate)
-                if f==None:
-                    f=j.getFrequency()
-                else:
-                    f=f+j.getFrequency()
-            
-            freqs.append(f)
+            if i.getPosition() + i.getLength() > self.length:
+                self.length = i.getPosition() + i.getLength()
 
-        return freqs
+    def getNotes(self)-> List[NoteType]:
+        return self.notes
     
-    def injectSampleRate(self, sampleRate: int):
+    def getLength(self) -> int:
+        return self.length
+
+    def setSampleRate(self, sampleRate: int):
         self.sampleRate = sampleRate
 
+    def setPosition(self, position: int):
+        self.position = position
+
+    def getPosition(self) -> int:
+        return self.position
+
     def __str__(self) -> str:
-        s="\n"
+        s = "\n"
         for note in self.notes:
-            s1=[]
-            for j in note:
-                s1.append(j.__str__())
-            s+=s1.__str__()+"\n"
-        return f"Pattern with {len(self.notes)} notes as :{s}"
-        return self.notes[0].__str__()
+            s += note.__str__()+"\n"
+        return f"Pattern with {len(self.notes)} notes at position {self.position} at volume {self.volume} with following notes :{s}"
