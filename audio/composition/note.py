@@ -15,12 +15,13 @@ class Note:
     A_S='A#'
     B='B'
 
-    def __init__(self, key: str, octave: int, length: int, position: int):
+    def __init__(self, key: str, octave: int, length: int, position: int, volume: float=1.0):
         self.note = key
         self.octave = octave
         self.freq = Note.__getFreq(key, octave)
         self.length = length
         self.position = position
+        self.volume = volume
 
     def __getFreq(key: str, octave: int) -> float:
         return freqs[notes.index(key) + octave * 12]
@@ -30,6 +31,9 @@ class Note:
 
     def setVolume(self, volume: float):
         self.volume = volume
+
+    def setRelativeVolume(self, volume: float):
+        self.volume *= volume
 
     def getVolume(self) -> float:
         return self.volume
@@ -44,4 +48,4 @@ class Note:
         return self.position
     
     def __str__(self) -> str:
-        return f"{self.note}{self.octave} for {self.length} beats at {self.position} position"
+        return f"{self.note}{self.octave} for {self.length} beats at {self.position} position with volume {self.volume}"

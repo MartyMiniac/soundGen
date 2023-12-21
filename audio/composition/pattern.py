@@ -11,7 +11,7 @@ class Pattern:
         self.position = 0
 
     def addNote(self, note: NoteType):
-        note.setVolume(self.volume)        
+        note.setRelativeVolume(self.volume)        
         self.notes.append(note)
         self.__calcLength()
 

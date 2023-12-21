@@ -13,6 +13,9 @@ class Song:
         self.length = 0
         self.isRenderReady = False
 
+    def getLength(self) -> int:
+        return self.length
+
     def addPattern(self, pattern: PatternType, position: int):
         self.isRenderReady = False
         pattern.setSampleRate(self.sampleRate)
@@ -48,6 +51,7 @@ class Song:
 
     def makeRenderReady(self):
         self.__fillEmptySpaces()
+        self.__addEnd()
         self.isRenderReady = True
 
     def render(self):
@@ -59,10 +63,10 @@ class Song:
 
         engine.saveAsWav(self.fileName)
 
-    def __getPattern(self, position: int) -> List[PatternType]:
-        if position in self.patterns.keys():
-            return self.patterns[position]
-        return []
+    def __addEnd(self):
+        End = Pattern(0)
+        End.addNote(Note(Note.C, 4, 1, 0))
+        self.addPattern(End, self.getLength())
 
     def __str__(self) -> str:
         s="\n"

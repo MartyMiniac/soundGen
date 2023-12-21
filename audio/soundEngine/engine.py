@@ -36,7 +36,6 @@ class Engine:
     def __addNote(self, note: NoteType, position: int):
         additiveWave=self.__generateWave(note)
         self.__addWave(additiveWave, position)
-        # print(f"Added note \"{note}\" at position {position}")
 
     def addPattern(self, pattern: PatternType):
         for i in pattern.getNotes():
